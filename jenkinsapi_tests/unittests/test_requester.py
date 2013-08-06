@@ -2,7 +2,8 @@ import mock
 import unittest
 
 import requests
-from jenkinsapi.jenkins import Requester
+from jenkinsapi.utils.requester import NoVerifySSLRequester
+from jenkinsapi.utils.requester import Requester
 from jenkinsapi.exceptions import JenkinsAPIException
 
 class TestQueue(unittest.TestCase):
@@ -183,3 +184,12 @@ class TestQueue(unittest.TestCase):
 
         print ae.exception.message
         self.assertTrue(ae.exception.message=="Operation failed. url=None, headers=None, status=500, text=")
+
+
+class TestNoVerifySSLRequester(unittest.TestCase):
+
+    @mock.patch.object(requests, 'get')
+    def test_requester_no_verify_ssl(self, _get):
+        req = NoVerifySSLRequester('foo', 'bar')
+        req.get_url(url='http://dummy')
+        _get.assert_called_with('http://dummy', verify=False, auth=('foo', 'bar'))

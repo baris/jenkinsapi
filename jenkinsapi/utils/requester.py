@@ -89,3 +89,11 @@ class Requester(object):
             raise JenkinsAPIException('Operation failed. url={0}, headers={1}, status={2}, text={3}'.format(
                 response.url, headers, response.status_code, response.text.encode('UTF-8')))
         return response
+
+
+class NoVerifySSLRequester(Requester):
+
+    def get_request_dict(self, url, params, data, headers):
+        requestKwargs = super(NoVerifySSLRequester, self).get_request_dict(url, params, data, headers)
+        requestKwargs['verify'] = False
+        return requestKwargs
